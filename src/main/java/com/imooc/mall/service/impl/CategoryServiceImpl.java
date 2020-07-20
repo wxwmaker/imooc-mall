@@ -7,11 +7,15 @@ import com.imooc.mall.exception.ImoocMallExceptionEnum;
 import com.imooc.mall.model.dao.CategoryMapper;
 import com.imooc.mall.model.pojo.Category;
 import com.imooc.mall.model.request.AddCategoryReq;
+import com.imooc.mall.model.vo.CategoryVO;
 import com.imooc.mall.service.CategoryService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -71,4 +75,25 @@ throw new ImoocMallException(ImoocMallExceptionEnum.DELETE_FAILED);
         return pageInfo;
     }
 
+@Override
+@Cacheable(value = "listCategoryForCustomer")
+    public List<CategoryVO> listCategoryForCustomer(){
+        ArrayList<CategoryVO> categoryVOArrayList = new ArrayList<>();
+        recursivelyFindCategories(categoryVOArrayList,0);
+        return categoryVOArrayList;
+    }
+
+    private void recursivelyFindCategories(List<CategoryVO> categoryVOList, Integer parentId) {
+        //递归获取所有子类别，并组合成为一个“目录树”
+        List<Category> categoryList = categoryMapper.selectCategoriesByParentId(parentId);
+        if (!CollectionUtils.isEmpty(categoryList)) {
+            for (int i = 0; i < categoryList.size(); i++) {
+                Category category = categoryList.get(i);
+                CategoryVO categoryVO = new CategoryVO();
+                BeanUtils.copyProperties(category, categoryVO);
+                categoryVOList.add(categoryVO);
+                recursivelyFindCategories(categoryVO.getChildCategory(), categoryVO.getId());
+            }
+        }
+    }
 }
