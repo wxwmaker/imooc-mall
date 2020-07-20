@@ -1,5 +1,6 @@
 package com.imooc.mall.controller;
 
+import com.github.pagehelper.PageInfo;
 import com.imooc.mall.common.ApiRestResponse;
 import com.imooc.mall.common.Constant;
 import com.imooc.mall.exception.ImoocMallExceptionEnum;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
@@ -78,6 +80,21 @@ public class CategoryController {
         }else{
             return ApiRestResponse.error(ImoocMallExceptionEnum.NEED_ADMIN);
         }
+    }
+    @ApiOperation("后台删除目录")
+    @PostMapping("admin/category/delete")
+    @ResponseBody
+    public ApiRestResponse deleteCategory(@RequestParam Integer id){
+
+         categoryService.delete(id);
+         return ApiRestResponse.success();
+    }
+    @ApiOperation("后台目录列表")
+    @PostMapping("admin/category/list")
+    @ResponseBody
+    public ApiRestResponse listCategoryForAdmin(@RequestParam Integer pageNum,@RequestParam Integer pageSize){
+        PageInfo pageInfo = categoryService.listForAdmin(pageNum, pageSize);
+        return ApiRestResponse.success(pageInfo);
     }
 
 }
