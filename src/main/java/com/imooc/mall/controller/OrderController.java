@@ -1,13 +1,13 @@
 package com.imooc.mall.controller;
 
+import com.github.pagehelper.PageInfo;
 import com.imooc.mall.common.ApiRestResponse;
 import com.imooc.mall.model.request.CreateOrderReq;
+import com.imooc.mall.model.vo.OrderVO;
 import com.imooc.mall.service.OrderService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 订单controller
@@ -24,5 +24,19 @@ public ApiRestResponse create(@RequestBody CreateOrderReq createOrderReq){
     return ApiRestResponse.success(orderNo);
 
 }
+
+    @GetMapping("/order/detail")
+    @ApiOperation("前台订单详情")
+    public ApiRestResponse detail(@RequestParam String orderNo){
+        OrderVO orderVO = orderService.detail(orderNo);
+        return ApiRestResponse.success(orderVO);
+    }
+
+    @GetMapping("/order/list")
+    @ApiOperation("前台订单列表")
+    public ApiRestResponse list(@RequestParam Integer pageNum,@RequestParam Integer pageSize){
+        PageInfo pageInfo = orderService.listForCustomer(pageNum, pageSize);
+        return ApiRestResponse.success(pageInfo);
+    }
 
 }
