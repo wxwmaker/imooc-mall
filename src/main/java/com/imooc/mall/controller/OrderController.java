@@ -39,4 +39,13 @@ public ApiRestResponse create(@RequestBody CreateOrderReq createOrderReq){
         return ApiRestResponse.success(pageInfo);
     }
 
+    /**
+     * 订单取消
+     */
+    @PostMapping("/order/cancel")
+    @ApiOperation("前台取消订单")
+    public ApiRestResponse cancel(@RequestParam String orderNo){
+       orderService.cancel(orderNo);
+        return ApiRestResponse.success();
+    }
 }
