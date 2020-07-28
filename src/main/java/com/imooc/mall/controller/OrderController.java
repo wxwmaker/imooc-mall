@@ -48,4 +48,21 @@ public ApiRestResponse create(@RequestBody CreateOrderReq createOrderReq){
        orderService.cancel(orderNo);
         return ApiRestResponse.success();
     }
+
+    /**
+     *生成二维码
+     */
+    @PostMapping("/order/qrcode")
+    @ApiOperation("生成二维码")
+    public ApiRestResponse qrcode(@RequestParam String orderNo){
+        String pngAddress = orderService.qrcode(orderNo);
+        return ApiRestResponse.success(pngAddress);
+    }
+
+    @GetMapping("pay")
+    @ApiOperation("支付接口")
+    public ApiRestResponse pay(@RequestParam String orderNo){
+        orderService.pay(orderNo);
+        return ApiRestResponse.success();
+    }
 }
