@@ -25,4 +25,11 @@ public interface OrderService {
     String qrcode(String orderNo);
 
     void pay(String orderNo);
+
+    PageInfo listForAdmin(Integer pageNum, Integer pageSize);
+
+    //发货
+    void deliver(String orderNo);
+
+    void finish(String orderNo);
 }
